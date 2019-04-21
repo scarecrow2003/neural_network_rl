@@ -1,4 +1,4 @@
-function [states, action, total_reward, Q, time] = q_learning(gamma, alpha_option)
+function [states, action, total_reward, Q, time] = q_learning_alpha_three(gamma)
     task1 = load('task1.mat');
     reward = reshape(task1.reward, [10, 10, 4]);
     Q = zeros(10, 10, 4);
@@ -15,16 +15,7 @@ function [states, action, total_reward, Q, time] = q_learning(gamma, alpha_optio
         k = 1;
         while 1
 %             display(strcat('trial: ', num2str(trial), ' k: ', num2str(k)));
-            switch alpha_option
-                case 1
-                    alpha = 1 / k;
-                case 2
-                    alpha = 100 / (100 + k);
-                case 3
-                    alpha = (1 + log(k)) / k;
-                case 4
-                    alpha = (1 + 5 * log(k)) / k;
-            end
+            alpha = (1 + log(k)) / k;
             if alpha < 0.005
                 break;
             end
