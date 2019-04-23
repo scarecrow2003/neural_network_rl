@@ -9,7 +9,7 @@ function [states, action, total_reward, Q, time] = q_learning_alpha_one(gamma)
     state_change = [[-1, 0]; [0, 1]; [1, 0]; [0, -1]];
     start_time = datevec(now);
     for trial = 1:3000
-        display(strcat('trial: ', num2str(trial)));
+%         display(strcat('trial: ', num2str(trial)));
         current_state = [1, 1];
         total_change = 0;
         k = 1;
@@ -20,7 +20,6 @@ function [states, action, total_reward, Q, time] = q_learning_alpha_one(gamma)
                 break;
             end
             epsilon = alpha;
-%             epsilon = 0.2;
             current_Q = reshape(Q(current_state(1), current_state(2), :), [1, 4]);
             probability = -1 * ones(4, 1);
             probability(current_Q == -1) = 0;
@@ -52,6 +51,12 @@ function [states, action, total_reward, Q, time] = q_learning_alpha_one(gamma)
     end
     end_time = datevec(now);
     time = etime(end_time, start_time);
+    hold on;
+    for i=0:10
+        plot([0, 10], [i, i], 'b-');
+        plot([i, i], [0, 10], 'b-');
+    end
+    action_plot = '^>V<';
     states = zeros(19, 2);
     states(1, :) = [1, 1];
     action = zeros(18, 1);
@@ -59,7 +64,12 @@ function [states, action, total_reward, Q, time] = q_learning_alpha_one(gamma)
     for i = 1:18
         [~, I] = max(Q(states(i, 1), states(i, 2), :));
         action(i) = I;
+        text(states(i, 2)-0.6, 10.5-states(i, 1), action_plot(action(i)), 'Color','red', 'FontSize', 15);
         states(i+1, :) = states(i, :) + state_change(action(i), :);
-        total_reward = total_reward + reward(states(i, 1), states(i, 2), action(i));
+        total_reward = total_reward + reward(states(i, 1), states(i, 2), action(i)) * gamma ^ (i - 1);
     end
+    text(5.5, 8.5, strcat('total reward: ', num2str(total_reward)), 'Color', 'magenta', 'FontSize', 15);
+    hold off;
+    set(gca,'xtick',[])
+    set(gca,'ytick',[])
 end

@@ -1,6 +1,7 @@
-function [states, action, total_reward, Q, time] = q_learning_alpha_four(gamma)
+function [states, action, total_reward, Q, time] = RL_main()
     task1 = load('task1.mat');
     reward = reshape(task1.reward, [10, 10, 4]);
+    gamma = 0.95;
     Q = zeros(10, 10, 4);
     Q(1, :, 1) = -1;
     Q(10, :, 3) = -1;
@@ -15,7 +16,7 @@ function [states, action, total_reward, Q, time] = q_learning_alpha_four(gamma)
         k = 1;
         while 1
 %             display(strcat('trial: ', num2str(trial), ' k: ', num2str(k)));
-            alpha = (1 + 5 * log(k)) / k;
+            alpha = 100 / (100 + k);
             if alpha < 0.005
                 break;
             end
